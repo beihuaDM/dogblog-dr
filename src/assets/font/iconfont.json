@@ -1,0 +1,16 @@
+{
+  "id": "2036525",
+  "name": "dog君博客门户网站",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon",
+  "description": "dog君博客门户网站",
+  "glyphs": [
+    {
+      "icon_id": "3092289",
+      "name": "展开",
+      "font_class": "zhankai",
+      "unicode": "e786",
+      "unicode_decimal": 59270
+    }
+  ]
+}

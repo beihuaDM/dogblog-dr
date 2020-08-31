@@ -1,0 +1,16 @@
+// 覆盖掉一些elementui样式
+
+.el-dialog {
+  transform: none;
+  left: 0;
+  position: relative;
+  margin: 0 auto;
+}
+
+// dropdown
+.el-dropdown-menu {
+  top:38px !important;
+  a {
+    display: block
+  }
+}
