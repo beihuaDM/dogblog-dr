@@ -1,17 +1,14 @@
 <template>
-  <div class="home">
-    <Head />
+  <div class="footer">
+    footer
   </div>
 </template>
 
 <script>
-import Head from '@/components/Head'
 
 export default {
   name: '',
-  components: {
-    Head
-  },
+  components: {},
   data() {
     return {
 

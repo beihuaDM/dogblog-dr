@@ -18,6 +18,26 @@ const routes = [
     component: () => import('@/views/home/index')
   },
   {
+    path: '/category',
+    name: 'Category',
+    component: () => import('@/views/category/index')
+  },
+  {
+    path: '/workList',
+    name: 'WorkList',
+    component: () => import('@/views/workList/index')
+  },
+  {
+    path: '/me',
+    name: 'Me',
+    component: () => import('@/views/me/index')
+  },
+  {
+    path: '/comment',
+    name: 'Comment',
+    component: () => import('@/views/comment/index')
+  },
+  {
     path: '*',
     redirect: '/404'
   }

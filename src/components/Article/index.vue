@@ -1,17 +1,14 @@
 <template>
-  <div class="home">
-    <Head />
+  <div class="article">
+    文章模块
   </div>
 </template>
 
 <script>
-import Head from '@/components/Head'
 
 export default {
   name: '',
-  components: {
-    Head
-  },
+  components: {},
   data() {
     return {
 
