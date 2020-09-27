@@ -3,7 +3,7 @@ import moment from "moment";
 
 const formatDate = Vue.filter("formatDate", function(v) {
   if (v) {
-    return moment(v).format('YYYY-MM-DD HH:mm:ss');
+    return moment(v).format('YYYY-MM-DD');
   }
 });
 

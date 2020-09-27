@@ -6,6 +6,27 @@
   "description": "dog君博客门户网站",
   "glyphs": [
     {
+      "icon_id": "338465",
+      "name": "评论",
+      "font_class": "pinglun",
+      "unicode": "e628",
+      "unicode_decimal": 58920
+    },
+    {
+      "icon_id": "3248658",
+      "name": "时间",
+      "font_class": "shijian",
+      "unicode": "e600",
+      "unicode_decimal": 58880
+    },
+    {
+      "icon_id": "5924483",
+      "name": "浏览",
+      "font_class": "liulan",
+      "unicode": "e624",
+      "unicode_decimal": 58916
+    },
+    {
       "icon_id": "924516",
       "name": "share",
       "font_class": "share",

@@ -1,5 +1,8 @@
 <template>
-  <div class="home">
+  <div
+    v-loading.fullscreen.lock="loading"
+    class="home"
+  >
     <!-- 顶部banner部分 -->
     <div class="home-banner">
       <img
@@ -67,7 +70,8 @@ export default {
   },
   data() {
     return {
-      popularArticle: [
+      loading: false, // 全屏加载
+      popularArticle: [ // 热门文章
         {
           id: 1,
           title: "jquery append 动态添加的元素事件on 不起作用的解决方法"
@@ -109,7 +113,7 @@ export default {
           title: "jquery append 动态添加的元素事件on 不起作用的解决方法"
         }
       ],
-      newArticle: [
+      newArticle: [ // 最新发布
         {
           id: 1,
           title: "jquery append 动态添加的元素事件on 不起作用的解决方法"
