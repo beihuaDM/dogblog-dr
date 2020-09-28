@@ -42,11 +42,20 @@
         :data="item"
       />
     </div>
+    <!-- 分页组件 -->
+    <pagination
+      :hidden="total<10"
+      :total="total"
+      :page.sync="page"
+      :limit.sync="pageSize"
+      @pagination="getArticleList"
+    />
   </div>
 </template>
 
 <script>
 import Head from "@/components/Head";
+import Pagination from '@/components/Pagination';
 import articleCard from '@/components/ArticleCard';
 import { getCategoryList } from '@/api/category';
 import { getArticleList } from '@/api/article';
@@ -55,6 +64,7 @@ export default {
   name: "",
   components: {
     Head,
+    Pagination,
     articleCard: articleCard
   },
   data() {
@@ -62,9 +72,9 @@ export default {
       loading: false, // 全屏加载
       categoryList: [], // 分类列表
       activeId: 1, // 当前展示该分类下的文章的分类id
-      page: 1,
-      pageSize: 10,
-      total: 0,
+      page: 1, // 当前页
+      pageSize: 10, // 每页显示多少条数据
+      total: 0, // 一共多少条数据
       articleList: [] // 文章列表
     };
   },
@@ -104,6 +114,7 @@ export default {
         });
         this.loading = false;
         this.articleList = result.rows;
+        this.total = result.count;
       } catch (e) {
         this.loading = false;
         this.$message.error(e.message)
@@ -111,10 +122,12 @@ export default {
     },
     // 点击分类，获取分类下文章
     handleGetArticleList(item) {
+      if (item.id === this.activeId) {
+        return
+      }
       this.activeId = item.id;
-      this.getArticleList({
-        category_id: this.activeId
-      });
+      this.page = 1;
+      this.getArticleList();
     }
   }
 };
@@ -189,6 +202,7 @@ export default {
       background-color: #f2f2f2;
       border-radius: 3px;
       font-weight: bold;
+      color: #eab92d;
     }
     &-block.active {
       color:#eab92d;

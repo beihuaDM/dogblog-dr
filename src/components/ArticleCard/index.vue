@@ -4,7 +4,10 @@
       class="articleCard-block"
     >
       <div class="title">{{ data.title }}</div>
-      <div class="description">{{ data.description }}</div>
+      <div
+        :title="data.description"
+        class="description"
+      >{{ data.description }}</div>
       <div class="bottom">
         <div class="bottom-browse">
           <dog-icon
