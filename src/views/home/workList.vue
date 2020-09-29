@@ -1,40 +1,24 @@
 <template>
-  <div class="workList">
+  <div
+    v-if="workList.length > 0"
+    class="workList"
+  >
     <div class="workList-title">
       <div class="workList-title-main">作品集</div>
       <div class="workList-title-sub">work collection</div>
     </div>
     <div class="workList-wrap">
-      <div class="workList-wrap-block">
+      <div
+        v-for="item in workList"
+        :key="item.id"
+        class="workList-wrap-block"
+        @click="goDetail(item)"
+      >
         <div
           class="modal"
           @mouseover="mouseover"
         >
-          <div class="modal-text">dog君个人博客系统</div>
-        </div>
-      </div>
-      <div class="workList-wrap-block">
-        <div
-          class="modal"
-          @mouseover="mouseover"
-        >
-          <div class="modal-text">人事管理系统</div>
-        </div>
-      </div>
-      <div class="workList-wrap-block">
-        <div
-          class="modal"
-          @mouseover="mouseover"
-        >
-          <div class="modal-text">餐饮系统开源项目</div>
-        </div>
-      </div>
-      <div class="workList-wrap-block">
-        <div
-          class="modal"
-          @mouseover="mouseover"
-        >
-          <div class="modal-text">前端工程化</div>
+          <div class="modal-text">{{ item.title }}</div>
         </div>
       </div>
     </div>
@@ -42,26 +26,55 @@
 </template>
 
 <script>
+import { getArticleList } from '@/api/article';
 
 export default {
   name: 'WorkList',
   components: {},
   data() {
     return {
-
+      workListId: 10, // 作品集id
+      page: 1, // 当前页
+      pageSize: 9999999999999, // 请求多少条数据
+      pageCount: 4, // 最多显示多少条数据
+      workList: [] // 作品集列表
     };
   },
   computed: {},
   watch: {},
-  created() {
-
+  async created() {
+    await this.getWorkList(); // 获取作品集
   },
-  mounted() {
-    const workListWrap = document.querySelector('.workList-wrap')
-    const childrenCount = workListWrap.childElementCount;
-    childrenCount > 1 ? workListWrap.className += ' gltOne' : workListWrap.className += ' onlyOne'
-  },
+  mounted() {},
   methods: {
+    // 点击跳转文章详情
+    goDetail(v) {
+      const { id } = v
+      this.$router.push({
+        path: '/articleDetail',
+        query: {
+          id
+        }
+      })
+    },
+    // 获取作品集
+    async getWorkList() {
+      try {
+        const { result } = await getArticleList({
+          category_id: this.workListId,
+          page: this.page,
+          pageSize: this.pageSize
+        });
+        this.workList = result.rows.splice(0, this.pageCount);
+        this.$nextTick(() => {
+          const workListWrap = document.querySelector('.workList-wrap')
+          const childrenCount = workListWrap.childElementCount;
+          childrenCount > 1 ? workListWrap.className += ' gltOne' : workListWrap.className += ' onlyOne'
+        })
+      } catch (e) {
+        this.$message.error(e.message)
+      }
+    },
     // 鼠标滑过作品集
     mouseover(e) {
       const element = e.currentTarget;

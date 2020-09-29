@@ -4,11 +4,16 @@
     <div
       v-for="(item,index) in data"
       :key="item.id"
+      :title="item.title"
       class="articleList-item"
+      @click="goDetail(item)"
     >
       {{ index + 1 }}.{{ item.title }}
     </div>
-    <div class="articleList-more">查看更多</div>
+    <div
+      class="articleList-more"
+      @click="goCategory"
+    >查看更多</div>
   </div>
 </template>
 
@@ -41,7 +46,22 @@ export default {
 
   },
   methods: {
-
+    // 点击跳转文章详情
+    goDetail(v) {
+      const { id } = v
+      this.$router.push({
+        path: '/articleDetail',
+        query: {
+          id
+        }
+      })
+    },
+    // 点击查看更多，跳转文章分类
+    goCategory() {
+      this.$router.push({
+        path: '/category'
+      })
+    }
   }
 }
 </script>
@@ -52,6 +72,7 @@ export default {
   background-color: #eab92d;
   padding: 23px 16px 13px;
   overflow: hidden;
+  position: relative;
   &-title {
     font-size:20px;
     color: #fff;
@@ -79,9 +100,11 @@ export default {
     line-height: 26px;
     text-align: center;
     font-size: 14px;
-    margin: 0 auto;
-    margin-top: 10px;
     cursor: pointer;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom:20px;
   }
   &-more:hover {
     background-color: #000;

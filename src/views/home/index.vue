@@ -58,7 +58,9 @@ import WorkList from './workList.vue'
 import ArticleList from './articleList.vue'
 import AboutMe from './aboutme.vue'
 import Foot from '@/components/Footer'
-
+import { getArticleList } from '@/api/article';
+import _ from 'lodash';
+import moment from 'moment';
 export default {
   name: 'Home',
   components: {
@@ -71,102 +73,48 @@ export default {
   data() {
     return {
       loading: false, // 全屏加载
-      popularArticle: [ // 热门文章
-        {
-          id: 1,
-          title: "jquery append 动态添加的元素事件on 不起作用的解决方法"
-        },
-        {
-          id: 2,
-          title: "jquery append 动态添加的元素事件on 不起作用的解决方法"
-        },
-        {
-          id: 3,
-          title: "jquery append 动态添加的元素事件on 不起作用的解决方法"
-        },
-        {
-          id: 4,
-          title: "jquery append 动态添加的元素事件on 不起作用的解决方法"
-        },
-        {
-          id: 5,
-          title: "jquery append 动态添加的元素事件on 不起作用的解决方法"
-        },
-        {
-          id: 6,
-          title: "jquery append 动态添加的元素事件on 不起作用的解决方法"
-        },
-        {
-          id: 7,
-          title: "jquery append 动态添加的元素事件on 不起作用的解决方法"
-        },
-        {
-          id: 8,
-          title: "jquery append 动态添加的元素事件on 不起作用的解决方法"
-        },
-        {
-          id: 9,
-          title: "jquery append 动态添加的元素事件on 不起作用的解决方法"
-        },
-        {
-          id: 10,
-          title: "jquery append 动态添加的元素事件on 不起作用的解决方法"
-        }
-      ],
-      newArticle: [ // 最新发布
-        {
-          id: 1,
-          title: "jquery append 动态添加的元素事件on 不起作用的解决方法"
-        },
-        {
-          id: 2,
-          title: "jquery append 动态添加的元素事件on 不起作用的解决方法"
-        },
-        {
-          id: 3,
-          title: "jquery append 动态添加的元素事件on 不起作用的解决方法"
-        },
-        {
-          id: 4,
-          title: "jquery append 动态添加的元素事件on 不起作用的解决方法"
-        },
-        {
-          id: 5,
-          title: "jquery append 动态添加的元素事件on 不起作用的解决方法"
-        },
-        {
-          id: 6,
-          title: "jquery append 动态添加的元素事件on 不起作用的解决方法"
-        },
-        {
-          id: 7,
-          title: "jquery append 动态添加的元素事件on 不起作用的解决方法"
-        },
-        {
-          id: 8,
-          title: "jquery append 动态添加的元素事件on 不起作用的解决方法"
-        },
-        {
-          id: 9,
-          title: "jquery append 动态添加的元素事件on 不起作用的解决方法"
-        },
-        {
-          id: 10,
-          title: "jquery append 动态添加的元素事件on 不起作用的解决方法"
-        }
-      ]
+      page: 1, // 当前页
+      pageSize: 99999999999, // 每页显示多少条数据
+      popularArticle: [], // 热门文章
+      newArticle: []// 最新发布
     }
   },
   computed: {},
   watch: {},
-  created() {
-
+  async created() {
+    await this.getArticleList(); // 获取文章列表
   },
   mounted() {
 
   },
   methods: {
-
+    // 获取文章列表
+    async getArticleList() {
+      try {
+        this.loading = true;
+        const { result } = await getArticleList({
+          page: this.page,
+          pageSize: this.pageSize
+        });
+        this.loading = false;
+        const popularArticle = _.cloneDeep(result.rows);
+        const newArticle = _.cloneDeep(result.rows);
+        popularArticle.sort((a, b) => {
+          return b.browse - a.browse
+        })
+        this.popularArticle = popularArticle.splice(0, 10);
+        newArticle.forEach((item, index) => {
+          item.createTime = moment(item.createdAt).valueOf();
+        })
+        newArticle.sort((a, b) => {
+          return b.createTime - a.createTime
+        });
+        this.newArticle = newArticle.splice(0, 10);
+      } catch (e) {
+        this.loading = false;
+        this.$message.error(e.message)
+      }
+    }
   }
 }
 </script>

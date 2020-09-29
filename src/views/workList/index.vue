@@ -31,6 +31,7 @@
         v-for="item in workList"
         :key="item.id"
         class="workList-wrap-block"
+        @click="goDetail(item)"
       >
         <div
           class="modal"
@@ -107,6 +108,16 @@ export default {
 
   },
   methods: {
+    // 点击跳转文章详情
+    goDetail(v) {
+      const { id } = v
+      this.$router.push({
+        path: '/articleDetail',
+        query: {
+          id
+        }
+      })
+    },
     // 获取作品集
     async getWorkList() {
       try {

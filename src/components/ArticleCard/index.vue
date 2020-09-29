@@ -54,7 +54,7 @@ export default {
   },
   methods: {
     // 点击跳转文章详情
-    async goDetail(v) {
+    goDetail(v) {
       const { id } = v
       this.$router.push({
         path: '/articleDetail',
