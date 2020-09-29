@@ -19,7 +19,10 @@
           style="font-size:12px"
           icon-class="iconshijian"
         />{{ data.createdAt | formatDate }}</div>
-        <div class="bottom-more">阅读全文》</div>
+        <div
+          class="bottom-more"
+          @click="goDetail(data)"
+        >阅读全文》</div>
       </div>
     </div>
   </div>
@@ -50,7 +53,16 @@ export default {
 
   },
   methods: {
-
+    // 点击跳转文章详情
+    async goDetail(v) {
+      const { id } = v
+      this.$router.push({
+        path: '/articleDetail',
+        query: {
+          id
+        }
+      })
+    }
   }
 }
 </script>
