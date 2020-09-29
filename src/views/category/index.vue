@@ -23,7 +23,9 @@
       </div>
     </div>
     <!-- 分类列表 -->
-    <div class="category-list">
+    <div
+      class="category-list"
+    >
       <div
         v-for="item in categoryList"
         :key="item.id"
@@ -35,12 +37,29 @@
       </div>
     </div>
     <!-- 文章列表 -->
-    <div class="category-articleList">
+    <div
+      v-if="articleList.length > 0"
+      class="category-articleList"
+    >
       <article-card
         v-for="item in articleList"
         :key="item.id"
         :data="item"
       />
+    </div>
+    <div
+      v-else
+      class="category-articleList-noData"
+    >
+      <div class="noData">
+        <div class="noData-icon">
+          <dog-icon
+            style="font-size:100px"
+            icon-class="iconzanwushuju"
+          />
+        </div>
+        <div class="noData-text">暂无数据</div>
+      </div>
     </div>
     <!-- 分页组件 -->
     <pagination
@@ -50,11 +69,22 @@
       :limit.sync="pageSize"
       @pagination="getArticleList"
     />
+    <!-- 大图 -->
+    <div class="category-footImg">
+      <img
+        class="category-footImg-img"
+        src="../../assets/images/image5_home.png"
+        alt=""
+      >
+    </div>
+    <!-- 版权说明 -->
+    <Foot />
   </div>
 </template>
 
 <script>
 import Head from "@/components/Head";
+import Foot from '@/components/Footer'
 import Pagination from '@/components/Pagination';
 import articleCard from '@/components/ArticleCard';
 import { getCategoryList } from '@/api/category';
@@ -64,6 +94,7 @@ export default {
   name: "",
   components: {
     Head,
+    Foot,
     Pagination,
     articleCard: articleCard
   },
@@ -264,6 +295,30 @@ export default {
           cursor: pointer;
         }
       }
+    }
+    &-noData {
+      width: 625px;
+      margin: 0 auto;
+      margin-top: 50px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      .noData {
+        color: #eee;
+        padding-right: 80px;
+        &-text {
+          text-align: center;
+          color: #bbb;
+        }
+      }
+    }
+  }
+  &-footImg {
+    width: 100%;
+    height: 230px;
+    &-img {
+      width: 100%;
+      height: 230px;
     }
   }
 }
