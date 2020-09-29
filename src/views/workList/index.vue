@@ -7,7 +7,7 @@
     <div class="workList-banner">
       <img
         class="workList-banner-img"
-        src="../../assets/images/image8_wzfl.png"
+        src="../../assets/images/image10_zpj.png"
       >
       <Head />
       <img
