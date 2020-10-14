@@ -1,19 +1,13 @@
 <template>
-  <div
-    v-loading.fullscreen.lock="loading"
-    class="comment"
-  >
+  <div v-loading.fullscreen.lock="loading" class="comment">
     <!-- 顶部banner部分 -->
     <div class="comment-banner">
       <img
         class="comment-banner-img"
         src="../../assets/images/image6_gwly.png"
-      >
+      />
       <Head />
-      <img
-        class="comment-banner-logo"
-        src="../../assets/images/logo.png"
-      >
+      <img class="comment-banner-logo" src="../../assets/images/logo.png" />
       <div class="comment-banner-text">
         <div class="text-wrap">
           <div class="line" />
@@ -32,20 +26,19 @@
       />
       <div class="comment-operate">
         <div class="operate-left">
-          <div class="noLogin">
-            请您先<span
-              class="operate-btn-text"
-              @click="openLoginDialog"
-            >登录</span>或<span class="operate-btn-text">注册账号</span>
+          <div v-if="Object.keys(userInfo).length == 0" class="noLogin">
+            请您先<span class="operate-btn-text" @click="openLoginDialog"
+              >登录</span
+            >或<span @click="openRegistryDialog" class="operate-btn-text"
+              >注册账号</span
+            >
           </div>
-          <!-- <div class="logined">
-            尊敬的<span class="operate-btn-text">XXX</span>,欢迎您~
-          </div> -->
+          <div v-else class="logined">
+            尊敬的<span class="operate-btn-text">{{ userInfo.nickname }}</span
+            >,欢迎您~
+          </div>
         </div>
-        <div
-          class="operate-right"
-          @click="handleCreateComment"
-        >
+        <div class="operate-right" @click="handleCreateComment">
           畅言一下
         </div>
       </div>
@@ -54,20 +47,14 @@
           <div class="line" />
           <div class="title">评论</div>
         </div>
-        <div class="comment-title-right">
-          100条评论
-        </div>
+        <div class="comment-title-right">{{ total }}条评论</div>
       </div>
       <div class="comment-content-wrap">
-        <div
-          v-for="item in commentList"
-          :key="item.id"
-          class="wrap-block"
-        >
+        <div v-for="item in commentList" :key="item.id" class="wrap-block">
           <div class="comment-content-wrap-block">
             <div class="left">
               <div class="left-avatar">
-                {{ item.user.nickname.substring(0,1) }}
+                {{ item.user.nickname.substring(0, 1) }}
               </div>
             </div>
             <div class="right">
@@ -83,19 +70,20 @@
                 {{ item.content }}
               </div>
               <div class="right-bottom">
-                <span class="right-bottom-text">
+                <span
+                  @click="openReplyDialog(item)"
+                  style="cursor:pointer"
+                  class="right-bottom-text"
+                >
                   回复
                 </span>
-                <div @click="handleVoteUp('comment',item)">
-                  <dog-icon
-                    icon-class="icondianzan"
-                  />
+                <div @click="handleVoteUp('comment', item)">
+                  <dog-icon icon-class="icondianzan" />
                 </div>
-                <span
-                  class="right-bottom-num"
-                  style="margin-right:20px"
-                >{{ item.vote_up }}</span>
-                <div @click="handleVoteDown('comment',item)">
+                <span class="right-bottom-num" style="margin-right:20px">{{
+                  item.vote_up
+                }}</span>
+                <div @click="handleVoteDown('comment', item)">
                   <dog-icon
                     style="font-size:20px;"
                     icon-class="icondislike-b"
@@ -114,7 +102,7 @@
           >
             <div class="left">
               <div class="left-avatar">
-                {{ itm.user.nickname.substring(0,1) }}
+                {{ itm.user.nickname.substring(0, 1) }}
               </div>
             </div>
             <div class="right">
@@ -123,23 +111,20 @@
                   {{ itm.user.nickname }}
                 </div>
                 <div class="right-top-time">
-                  {{ item.createdAt |formatDate }}
+                  {{ item.createdAt | formatDate }}
                 </div>
               </div>
               <div class="right-content">
                 {{ itm.content }}
               </div>
               <div class="right-bottom">
-                <div @click="handleVoteUp('reply',itm)">
-                  <dog-icon
-                    icon-class="icondianzan"
-                  />
+                <div @click="handleVoteUp('reply', itm)">
+                  <dog-icon icon-class="icondianzan" />
                 </div>
-                <span
-                  class="right-bottom-num"
-                  style="margin-right:20px"
-                >{{ itm.vote_up }}</span>
-                <div @click="handleVoteDown('reply',itm)">
+                <span class="right-bottom-num" style="margin-right:20px">{{
+                  itm.vote_up
+                }}</span>
+                <div @click="handleVoteDown('reply', itm)">
                   <dog-icon
                     style="font-size:20px;"
                     icon-class="icondislike-b"
@@ -154,7 +139,7 @@
     </div>
     <!-- 分页组件 -->
     <pagination
-      :hidden="total<10"
+      :hidden="total < 10"
       :total="total"
       :page.sync="page"
       :limit.sync="pageSize"
@@ -166,107 +151,187 @@
         class="comment-footImg-img"
         src="../../assets/images/image5_home.png"
         alt=""
-      >
+      />
     </div>
     <!-- 版权说明 -->
     <Foot />
+    <!-- 回复dialog -->
     <el-dialog
-      title="登录"
-      el-drag-dialog
-      :visible.sync="loginDialogVisible"
+      width="500px"
+      title="回复"
+      :close-on-press-escape="false"
+      :close-on-click-modal="false"
+      :destroy-on-close="true"
+      :before-close="cancelReply"
+      v-el-drag-dialog
+      :visible.sync="replyDialogVisible"
     >
-      <!-- <el-form
-        ref="loginForm"
+      <el-form
+        ref="replyForm"
+        :model="replyForm"
         label-width="100px"
-        :model="loginForm"
-        :rules="loginFormRules"
+        :rules="replyRules"
         auto-complete="off"
         label-position="left"
       >
-        <el-form-item
-          prop="title"
-          label="邮箱："
-        >
+        <el-form-item label="回复内容：" prop="content">
           <el-input
-            v-model="listQuery.title"
-            style="width:450px"
-            placeholder="请输入文章标题"
+            v-model="replyForm.content"
+            type="textarea"
+            placeholder="请输入回复内容"
+            tabindex="1"
+            auto-complete="on"
           />
         </el-form-item>
-        <el-form-item
-          prop="author"
-          label="文章作者："
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="cancelReply">取 消</el-button>
+        <el-button type="primary" :loading="replyLoading" @click="commentReply"
+          >回 复</el-button
         >
-          <el-input
-            v-model="listQuery.author"
-            style="width:450px"
-            placeholder="请输入文章作者"
-          />
-        </el-form-item>
-        <el-form-item
-          label="文章分类："
-          prop="category_id"
-        >
-          <el-select
-            v-model="listQuery.category_id"
-            placeholder="请选择文章分类"
-            style="width:450px"
-          >
-            <el-option
-              v-for="item in categoryData"
-              :key="item.id"
-              :label="item.name"
-              :value="item.id"
-            />
-          </el-select>
-        </el-form-item>
-        <el-form-item
-          prop="description"
-          label="文章描述："
-        >
-          <el-input
-            v-model="listQuery.description"
-            style="width:450px"
-            placeholder="请输入文章描述"
-          />
-        </el-form-item>
-        <el-form-item
-          prop="keyword"
-          label="文章关键字："
-        >
-          <el-input
-            v-model="listQuery.keyword"
-            style="width:450px"
-            placeholder="请输入文章简介"
-          />
-        </el-form-item>
-        <el-form-item
-          prop="content"
-          label="文章内容："
-        >
-          <mavon-editor
-            ref="md"
-            v-model="listQuery.content"
-            :ishljs="true"
-          />
-        </el-form-item>
-        <el-form-item>
-          <el-button
-            type="primary"
-            :loading="btnLoading"
-            @click="handleCreate"
-          >点击创建</el-button>
-        </el-form-item>
-      </el-form> -->
-      <div
-        slot="footer"
-        class="dialog-footer"
+      </div>
+    </el-dialog>
+    <!-- 登录dialog -->
+    <el-dialog
+      width="500px"
+      title="登录"
+      :close-on-press-escape="false"
+      :close-on-click-modal="false"
+      :destroy-on-close="true"
+      :before-close="cancelLogin"
+      v-el-drag-dialog
+      :visible.sync="loginDialogVisible"
+    >
+      <el-form
+        ref="loginForm"
+        :model="loginForm"
+        label-width="100px"
+        :rules="loginRules"
+        auto-complete="off"
+        label-position="left"
       >
-        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <el-form-item label="邮箱：" prop="email">
+          <el-input
+            v-model="loginForm.email"
+            placeholder="请输入邮箱"
+            type="text"
+            tabindex="1"
+            auto-complete="on"
+          />
+        </el-form-item>
+
+        <el-form-item label="密码：" prop="password">
+          <el-input
+            v-model="loginForm.password"
+            type="password"
+            placeholder="请输入密码，6--16位，字母 数字下划线减号"
+            tabindex="2"
+            auto-complete="on"
+            @keyup.enter.native="userLogin"
+          />
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="cancelLogin">取 消</el-button>
+        <el-button type="primary" :loading="loginLoading" @click="userLogin"
+          >登 录</el-button
+        >
+      </div>
+    </el-dialog>
+    <!-- 注册dialog -->
+    <el-dialog
+      width="500px"
+      title="注册"
+      v-el-drag-dialog
+      :close-on-press-escape="false"
+      :close-on-click-modal="false"
+      :destroy-on-close="true"
+      :before-close="cancelRegistry"
+      :visible.sync="registryDialogVisible"
+    >
+      <el-form
+        ref="registryForm"
+        :model="registryForm"
+        label-width="100px"
+        :rules="registryRules"
+        auto-complete="off"
+        label-position="left"
+      >
+        <el-form-item label="邮箱：" prop="email">
+          <el-input
+            v-model="registryForm.email"
+            placeholder="请输入邮箱"
+            type="text"
+            tabindex="1"
+            auto-complete="on"
+          />
+        </el-form-item>
+
+        <el-form-item label="密码：" prop="password">
+          <el-input
+            v-model="registryForm.password"
+            type="password"
+            placeholder="请输入密码，6--16位，字母 数字下划线减号"
+            tabindex="2"
+            auto-complete="on"
+          />
+        </el-form-item>
+        <el-form-item label="确认密码：" prop="confirmPassword">
+          <el-input
+            v-model="registryForm.confirmPassword"
+            type="password"
+            placeholder="确认密码与上方相同"
+            tabindex="3"
+            auto-complete="on"
+          />
+        </el-form-item>
+        <div
+          style="display:flex;justify-content:space-between;align-items:flex-start"
+        >
+          <el-form-item label="验证码：" prop="code">
+            <el-input
+              v-model="registryForm.code"
+              type="text"
+              placeholder="请输入验证码"
+              tabindex="3"
+              auto-complete="on"
+            />
+          </el-form-item>
+          <el-button :disabled="disabled" type="primary" @click="sendCode">{{
+            sendCodeTxt
+          }}</el-button>
+        </div>
+        <el-form-item label="昵称：" prop="nickname">
+          <el-input
+            v-model="registryForm.nickname"
+            type="text"
+            placeholder="请输入验证码"
+            tabindex="3"
+            auto-complete="on"
+          />
+        </el-form-item>
+        <el-form-item label="性别：" prop="sex">
+          <el-radio-group v-model="registryForm.sex">
+            <el-radio :label="1">男</el-radio>
+            <el-radio :label="0">女</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="城市：" prop="city">
+          <el-cascader
+            v-model="registryForm.city"
+            :options="cityOptions"
+            @change="changeCity"
+          ></el-cascader>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="cancelRegistry">取 消</el-button>
         <el-button
           type="primary"
-          @click="dialogFormVisible = false"
-        >确 定</el-button>
+          :loading="registryLoading"
+          @click="userRegistry"
+          >注 册</el-button
+        >
       </div>
     </el-dialog>
   </div>
@@ -274,15 +339,22 @@
 
 <script>
 import Head from "@/components/Head";
-import Foot from '@/components/Footer';
-import Pagination from '@/components/Pagination';
-import { getCommentList, updateCommentVote } from '@/api/comment';
-import { getReplyList, updateReplyVote } from '@/api/reply';
-import moment from 'moment';
-import _ from 'lodash';
+import Foot from "@/components/Footer";
+import Pagination from "@/components/Pagination";
+import {
+  getCommentList,
+  updateCommentVote,
+  createComment
+} from "@/api/comment";
+import { getReplyList, updateReplyVote, createReply } from "@/api/reply";
+import { sendVerify, userRegister } from "@/api/user";
+import moment from "moment";
+import _ from "lodash";
+import { validUsername, validPassword } from "@/utils/validate";
+import { cityList } from "./city";
 
 export default {
-  name: 'Comment',
+  name: "Comment",
   components: {
     Head,
     Foot,
@@ -290,30 +362,166 @@ export default {
   },
   filters: {
     formatDate(v) {
-      return moment(v).format('YYYY-MM-DD HH:mm:ss');
+      return moment(v).format("YYYY-MM-DD HH:mm:ss");
     }
   },
   data() {
+    const validateUsername = (rule, value, callback) => {
+      if (!validUsername(value)) {
+        callback(new Error("用户名格式输入不正确"));
+      } else {
+        callback();
+      }
+    };
+    const validatePassword = (rule, value, callback) => {
+      if (!validPassword(value)) {
+        callback(new Error("密码格式不正确，6--16位，字母 数字下划线减号"));
+      } else {
+        callback();
+      }
+    };
+    const validateconfirmPassword = (rule, value, callback) => {
+      if (!validPassword(value)) {
+        callback(new Error("密码格式不正确，6--16位，字母 数字下划线减号"));
+      } else if (value && value !== this.registryForm.password) {
+        callback(new Error("密码与确认密码不同"));
+      } else {
+        callback();
+      }
+    };
     return {
       loading: false, // 全屏loading
-      content: '', // 评论内容
+      replyLoading: false, // 回复loading
+      loginLoading: false, // 登录loading
+      registryLoading: false, // 注册loading
+      content: "", // 评论内容
       page: 1, // 当前页
       pageSize: 10, // 每页显示多少条数据
       total: 0, // 一共多少条数据
       commentList: [], // 评论列表
       loginDialogVisible: false, // 登录modal
-      registryDialogVisible: false // 注册modal
+      registryDialogVisible: false, // 注册modal
+      replyDialogVisible: false, // 回复modal
+      // 回复
+      replyForm: {
+        // 回复表单信息
+        comment_id: undefined,
+        content: ""
+      },
+      replyRules: {
+        // 回复规则
+        content: [
+          {
+            required: true,
+            trigger: "blur",
+            message: "请输入回复内容"
+          }
+        ]
+      },
+      // 登录
+      loginForm: {
+        // 登录表单信息
+        email: "",
+        password: ""
+      },
+      loginRules: {
+        // 登录规则
+        email: [
+          {
+            required: true,
+            trigger: "blur",
+            validator: validateUsername
+          }
+        ],
+        password: [
+          {
+            required: true,
+            trigger: "blur",
+            validator: validatePassword
+          }
+        ]
+      },
+      // 注册
+      registryForm: {
+        // 注册表单信息
+        email: "",
+        password: "",
+        confirmPassword: "",
+        code: "",
+        sex: 1,
+        nickname: "",
+        city: ""
+      },
+      registryRules: {
+        // 注册规则
+        email: [
+          {
+            required: true,
+            trigger: "blur",
+            validator: validateUsername
+          }
+        ],
+        password: [
+          {
+            required: true,
+            trigger: "blur",
+            validator: validatePassword
+          }
+        ],
+        confirmPassword: [
+          {
+            required: true,
+            trigger: "blur",
+            validator: validateconfirmPassword
+          }
+        ],
+        code: [
+          {
+            required: true,
+            trigger: "blur",
+            message: "请输入验证码"
+          }
+        ],
+        sex: [
+          {
+            required: true,
+            trigger: "blur",
+            message: "请选择性别"
+          }
+        ],
+        nickname: [
+          {
+            required: true,
+            trigger: "blur",
+            message: "请输入昵称"
+          }
+        ],
+        city: [
+          {
+            required: true,
+            trigger: "blur",
+            message: "请选择城市"
+          }
+        ]
+      },
+      disabled: false, // 是否禁用发送验证码
+      sendCodeTxt: "发送验证码", // 发送验证码文字
+      time: 61, // 倒计时
+      intervalTimer: null, // 定时器
+      cityOptions: cityList // 城市列表
     };
   },
-  computed: {},
+  computed: {
+    userInfo() {
+      return this.$store.state.userInfo;
+    }
+  },
   watch: {},
   async created() {
     // 获取评论列表
     await this.getCommentList();
   },
-  mounted() {
-
-  },
+  mounted() {},
   methods: {
     // 获取评论列表
     async getCommentList() {
@@ -324,15 +532,16 @@ export default {
           pageSize: this.pageSize
         });
         this.loading = false;
-        result.rows.forEach((item) => {
-          item.reply = []
-        })
+        result.rows.forEach(item => {
+          item.reply = [];
+        });
         this.commentList = result.rows;
         this.total = result.count;
         this.getReplyList();
       } catch (e) {
+        console.log(e);
         this.loading = false;
-        this.$message.error(e.message)
+        this.$message.error(e.message);
       }
     },
     // 获取回复列表
@@ -345,87 +554,240 @@ export default {
         });
         this.loading = false;
         const commentList = _.cloneDeep(this.commentList);
-        result.rows.forEach((item) => {
-          commentList.forEach((itm) => {
+        result.rows.forEach(item => {
+          commentList.forEach(itm => {
             if (item.comment_id === itm.id) {
               item.createTime = moment(item.createdAt).valueOf();
-              itm.reply.push(item)
+              itm.reply.push(item);
             }
-          })
-        })
-        commentList.forEach((item) => {
+          });
+        });
+        commentList.forEach(item => {
           item.reply.sort((a, b) => {
             return a.createTime - b.createTime;
-          })
-        })
+          });
+        });
         this.commentList = commentList;
       } catch (e) {
         this.loading = false;
-        this.$message.error(e.message)
+        this.$message.error(e.message);
       }
     },
     // 点击点赞
     async handleVoteUp(type, v) {
       try {
-        if (type === 'comment') {
+        if (type === "comment") {
           await updateCommentVote({
             id: v.id,
-            type: 'vote_up'
+            type: "vote_up"
           });
         } else {
           await updateReplyVote({
             id: v.id,
-            type: 'vote_up'
+            type: "vote_up"
           });
         }
         v.vote_up++;
         this.$forceUpdate();
       } catch (e) {
-        this.$message.error("点赞失败")
+        this.$message.error("点赞失败");
       }
     },
     // 点击踩
     async handleVoteDown(type, v) {
       try {
-        if (type === 'comment') {
+        if (type === "comment") {
           await updateCommentVote({
             id: v.id,
-            type: 'vote_down'
+            type: "vote_down"
           });
         } else {
           await updateReplyVote({
             id: v.id,
-            type: 'vote_down'
+            type: "vote_down"
           });
         }
         v.vote_down++;
         this.$forceUpdate();
       } catch (e) {
-        this.$message.error("更新失败")
+        this.$message.error("更新失败");
       }
     },
     // 点击发表评论
     async handleCreateComment() {
-      const user = this.$store.state.user;
+      const user = this.$store.state.userInfo;
       if (!user) {
         return this.$message.error("请登录您的账号");
       }
       if (!this.content) {
         return this.$message.warning("请输入您的评论");
       }
+      try {
+        this.loading = true;
+        const { result } = await createComment({
+          content: this.content
+        });
+        this.loading = false;
+        this.$message.success("发布评论成功");
+        this.getCommentList();
+      } catch (e) {
+        this.loading = false;
+        this.$message.error(e.message);
+      }
+    },
+    // 点击回复按钮
+    openReplyDialog(v) {
+      console.log(v);
+      this.replyForm.comment_id = v.id;
+      this.replyDialogVisible = true;
+    },
+    // 用户取消回复
+    cancelReply() {
+      this.replyForm = {
+        comment_id: undefined,
+        content: ""
+      };
+      this.replyLoading = false;
+      this.replyDialogVisible = false;
+    },
+    // 用户点击回复
+    async commentReply() {
+      this.$refs.replyForm.validate(valid => {
+        if (valid) {
+          try {
+            this.replyLoading = true;
+            const { result } = createReply(this.replyForm);
+            this.replyLoading = false;
+            this.$message.success("回复成功");
+            this.cancelReply();
+            this.getCommentList();
+          } catch (e) {
+            this.replyLoading = false;
+            this.$message.error(e.message);
+          }
+        } else {
+          return false;
+        }
+      });
     },
     // 点击登录按钮
     openLoginDialog() {
-
+      this.loginDialogVisible = true;
+    },
+    // 用户点击登录
+    userLogin() {
+      this.$refs.loginForm.validate(valid => {
+        if (valid) {
+          this.loginLoading = true;
+          this.$store
+            .dispatch("userLogin", this.loginForm)
+            .then(res => {
+              this.loginLoading = false;
+              this.$message.success("登录成功");
+              setTimeout(() => {
+                this.cancelLogin();
+              }, 500);
+            })
+            .catch(err => {
+              this.$message.error(err.msg);
+              this.$refs["loginForm"].validate();
+              this.loginLoading = false;
+            });
+        } else {
+          return false;
+        }
+      });
+    },
+    // 用户取消登录
+    cancelLogin() {
+      this.loginForm = {
+        email: "",
+        password: ""
+      };
+      this.loginLoading = false;
+      this.loginDialogVisible = false;
     },
     // 点击注册账号按钮
     openRegistryDialog() {
-
+      this.registryDialogVisible = true;
+    },
+    // 点击发送验证码
+    async sendCode() {
+      if (!validUsername(this.registryForm.email)) {
+        return this.$message.error("请正确填写邮箱");
+      }
+      try {
+        this.time = 61;
+        this.timer();
+        const { result } = await sendVerify(this.registryForm);
+        this.$message.success("验证码发送成功，请您到邮箱查看");
+      } catch (e) {
+        this.$message.error(e.message);
+      }
+    },
+    // 倒计时
+    timer() {
+      if (this.time > 0) {
+        this.disabled = true;
+        this.time--;
+        this.sendCodeTxt = `${this.time}秒后重新获取`;
+        if (this.intervalTimer) {
+          return;
+        }
+        this.intervalTimer = setInterval(this.timer, 1000);
+      } else {
+        this.time = 61;
+        clearInterval(this.intervalTimer);
+        this.sendCodeTxt = "发送验证码";
+        this.disabled = false;
+      }
+    },
+    // 用户取消注册
+    cancelRegistry() {
+      this.registryForm = {
+        email: "",
+        password: "",
+        confirmPassword: "",
+        code: "",
+        nickname: "",
+        sex: 1,
+        city: ""
+      };
+      this.disabled = false;
+      this.sendCodeTxt = "发送验证码";
+      this.time = 61;
+      this.registryLoading = false;
+      this.registryDialogVisible = false;
+    },
+    // 改变城市数据
+    changeCity() {
+      this.registryForm.city = this.registryForm.city[
+        this.registryForm.city.length - 1
+      ];
+    },
+    // 用户点击注册
+    userRegistry() {
+      this.$refs.registryForm.validate(valid => {
+        if (valid) {
+          try {
+            this.registryLoading = true;
+            const { result } = userRegister(this.registryForm);
+            this.registryLoading = false;
+            this.$message.success("恭喜您，注册成功");
+            this.cancelRegistry();
+          } catch (e) {
+            this.registryLoading = false;
+            this.$message.error(e.message);
+          }
+        } else {
+          return false;
+        }
+      });
     }
   }
-}
+};
 </script>
-<style lang='scss' scoped>
+<style lang="scss">
 .comment {
   &-banner {
     position: relative;
@@ -480,7 +842,7 @@ export default {
     width: 494px;
     margin: 0 auto;
     .comment-operate {
-      margin-top:12px;
+      margin-top: 12px;
       margin-bottom: 31px;
       display: flex;
       justify-content: space-between;
@@ -489,8 +851,8 @@ export default {
         font-size: 14px;
         color: #333;
         .operate-btn-text {
-          color:#eab92d;
-          font-weight:bold;
+          color: #eab92d;
+          font-weight: bold;
           cursor: pointer;
         }
       }
@@ -512,12 +874,12 @@ export default {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-bottom:1px solid #f2f2f2;
+      border-bottom: 1px solid #f2f2f2;
       padding-bottom: 7px;
       &-left {
         display: flex;
         justify-content: flex-start;
-        align-items:center;
+        align-items: center;
         .line {
           width: 3px;
           height: 13px;
@@ -527,7 +889,7 @@ export default {
           font-size: 16px;
           color: #333;
           font-weight: bold;
-          margin-left:4px;
+          margin-left: 4px;
         }
       }
       &-right {
@@ -536,16 +898,16 @@ export default {
       }
     }
     .comment-content-wrap {
-      margin-top:29px;
+      margin-top: 29px;
       .wrap-block {
-        border-bottom:1px dashed #d9d9d9;
+        border-bottom: 1px dashed #d9d9d9;
         overflow: hidden;
       }
       &-block {
         display: flex;
         justify-content: space-between;
         align-items: flex-start;
-        margin-bottom:19px;
+        margin-bottom: 19px;
         .left {
           margin-right: 11px;
           &-avatar {
@@ -594,27 +956,59 @@ export default {
             &-num {
               margin-left: 6px;
               font-size: 13px;
-              color:#808080;
+              color: #808080;
             }
             i.icon.iconfont {
               font-size: 22px;
               color: #d7d7d7;
               cursor: pointer;
-
             }
           }
         }
       }
     }
-
   }
   &-footImg {
-  width: 100%;
-  height: 230px;
-  &-img {
     width: 100%;
     height: 230px;
+    &-img {
+      width: 100%;
+      height: 230px;
+    }
   }
+  .el-dialog__headerbtn:focus .el-dialog__close,
+  .el-dialog__headerbtn:hover .el-dialog__close {
+    color: #eab92d;
+  }
+  .el-button:focus,
+  .el-button:hover,
+  .el-button.el-button--primary.is-disabled {
+    color: #fff;
+    background-color: #ffdead;
+    border-color: #ffdead;
+  }
+  .el-button--primary {
+    background-color: #eab92d;
+    border-color: #eab92d;
+  }
+  .el-button--primary:hover {
+    color: #fff;
+    background-color: #ffdead;
+    border-color: #ffdead;
+  }
+  .el-radio__input.is-checked + .el-radio__label {
+    color: #eab92d;
+  }
+  .el-radio__input.is-checked .el-radio__inner {
+    background-color: #eab92d;
+    border-color: #eab92d;
+  }
+  .el-radio__inner:hover {
+    border-color: #eab92d;
+  }
+  .el-cascader .el-input .el-input__inner:focus,
+  .el-cascader .el-input.is-focus .el-input__inner {
+    border-color: #eab92d;
   }
 }
 </style>
