@@ -9,3 +9,12 @@ export function getReplyList(params = {}) {
   })
 }
 
+// 更新回复 赞数 踩数
+export function updateReplyVote(params = {}) {
+  return request({
+    url: '/api/reply/update',
+    method: 'post',
+    data: params
+  })
+}
+

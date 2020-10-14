@@ -6,6 +6,20 @@
   "description": "dog君博客门户网站",
   "glyphs": [
     {
+      "icon_id": "579286",
+      "name": "点赞",
+      "font_class": "dianzan",
+      "unicode": "e60c",
+      "unicode_decimal": 58892
+    },
+    {
+      "icon_id": "3050820",
+      "name": "不喜欢",
+      "font_class": "dislike-b",
+      "unicode": "e61d",
+      "unicode_decimal": 58909
+    },
+    {
       "icon_id": "3101170",
       "name": "暂无数据",
       "font_class": "zanwushuju",

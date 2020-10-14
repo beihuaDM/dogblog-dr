@@ -8,4 +8,12 @@ export function getCommentList(params = {}) {
     params
   })
 }
+// 更新评论 赞数 踩数
+export function updateCommentVote(params = {}) {
+  return request({
+    url: '/api/comment/update',
+    method: 'post',
+    data: params
+  })
+}
 

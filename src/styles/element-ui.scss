@@ -32,3 +32,11 @@
 .el-select .el-input.is-focus .el-input__inner {
   border-color: #eab92d;
 }
+.el-textarea {
+  textarea {
+    resize: none;
+  }
+  .el-textarea__inner:focus {
+    border-color: #eab92d;
+  }
+}
