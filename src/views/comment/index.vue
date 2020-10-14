@@ -1,13 +1,19 @@
 <template>
-  <div v-loading.fullscreen.lock="loading" class="comment">
+  <div
+    v-loading.fullscreen.lock="loading"
+    class="comment"
+  >
     <!-- 顶部banner部分 -->
     <div class="comment-banner">
       <img
         class="comment-banner-img"
         src="../../assets/images/image6_gwly.png"
-      />
+      >
       <Head />
-      <img class="comment-banner-logo" src="../../assets/images/logo.png" />
+      <img
+        class="comment-banner-logo"
+        src="../../assets/images/logo.png"
+      >
       <div class="comment-banner-text">
         <div class="text-wrap">
           <div class="line" />
@@ -26,19 +32,29 @@
       />
       <div class="comment-operate">
         <div class="operate-left">
-          <div v-if="Object.keys(userInfo).length == 0" class="noLogin">
-            请您先<span class="operate-btn-text" @click="openLoginDialog"
-              >登录</span
-            >或<span @click="openRegistryDialog" class="operate-btn-text"
-              >注册账号</span
-            >
+          <div
+            v-if="Object.keys(userInfo).length == 0"
+            class="noLogin"
+          >
+            请您先<span
+              class="operate-btn-text"
+              @click="openLoginDialog"
+            >登录</span>或<span
+              class="operate-btn-text"
+              @click="openRegistryDialog"
+            >注册账号</span>
           </div>
-          <div v-else class="logined">
-            尊敬的<span class="operate-btn-text">{{ userInfo.nickname }}</span
-            >,欢迎您~
+          <div
+            v-else
+            class="logined"
+          >
+            尊敬的<span class="operate-btn-text">{{ userInfo.nickname }}</span>,欢迎您~
           </div>
         </div>
-        <div class="operate-right" @click="handleCreateComment">
+        <div
+          class="operate-right"
+          @click="handleCreateComment"
+        >
           畅言一下
         </div>
       </div>
@@ -50,7 +66,11 @@
         <div class="comment-title-right">{{ total }}条评论</div>
       </div>
       <div class="comment-content-wrap">
-        <div v-for="item in commentList" :key="item.id" class="wrap-block">
+        <div
+          v-for="item in commentList"
+          :key="item.id"
+          class="wrap-block"
+        >
           <div class="comment-content-wrap-block">
             <div class="left">
               <div class="left-avatar">
@@ -71,16 +91,19 @@
               </div>
               <div class="right-bottom">
                 <span
-                  @click="openReplyDialog(item)"
                   style="cursor:pointer"
                   class="right-bottom-text"
+                  @click="openReplyDialog(item)"
                 >
                   回复
                 </span>
                 <div @click="handleVoteUp('comment', item)">
                   <dog-icon icon-class="icondianzan" />
                 </div>
-                <span class="right-bottom-num" style="margin-right:20px">{{
+                <span
+                  class="right-bottom-num"
+                  style="margin-right:20px"
+                >{{
                   item.vote_up
                 }}</span>
                 <div @click="handleVoteDown('comment', item)">
@@ -121,7 +144,10 @@
                 <div @click="handleVoteUp('reply', itm)">
                   <dog-icon icon-class="icondianzan" />
                 </div>
-                <span class="right-bottom-num" style="margin-right:20px">{{
+                <span
+                  class="right-bottom-num"
+                  style="margin-right:20px"
+                >{{
                   itm.vote_up
                 }}</span>
                 <div @click="handleVoteDown('reply', itm)">
@@ -151,19 +177,19 @@
         class="comment-footImg-img"
         src="../../assets/images/image5_home.png"
         alt=""
-      />
+      >
     </div>
     <!-- 版权说明 -->
     <Foot />
     <!-- 回复dialog -->
     <el-dialog
+      v-el-drag-dialog
       width="500px"
       title="回复"
       :close-on-press-escape="false"
       :close-on-click-modal="false"
       :destroy-on-close="true"
       :before-close="cancelReply"
-      v-el-drag-dialog
       :visible.sync="replyDialogVisible"
     >
       <el-form
@@ -174,7 +200,10 @@
         auto-complete="off"
         label-position="left"
       >
-        <el-form-item label="回复内容：" prop="content">
+        <el-form-item
+          label="回复内容："
+          prop="content"
+        >
           <el-input
             v-model="replyForm.content"
             type="textarea"
@@ -184,22 +213,27 @@
           />
         </el-form-item>
       </el-form>
-      <div slot="footer" class="dialog-footer">
+      <div
+        slot="footer"
+        class="dialog-footer"
+      >
         <el-button @click="cancelReply">取 消</el-button>
-        <el-button type="primary" :loading="replyLoading" @click="commentReply"
-          >回 复</el-button
-        >
+        <el-button
+          type="primary"
+          :loading="replyLoading"
+          @click="commentReply"
+        >回 复</el-button>
       </div>
     </el-dialog>
     <!-- 登录dialog -->
     <el-dialog
+      v-el-drag-dialog
       width="500px"
       title="登录"
       :close-on-press-escape="false"
       :close-on-click-modal="false"
       :destroy-on-close="true"
       :before-close="cancelLogin"
-      v-el-drag-dialog
       :visible.sync="loginDialogVisible"
     >
       <el-form
@@ -210,7 +244,10 @@
         auto-complete="off"
         label-position="left"
       >
-        <el-form-item label="邮箱：" prop="email">
+        <el-form-item
+          label="邮箱："
+          prop="email"
+        >
           <el-input
             v-model="loginForm.email"
             placeholder="请输入邮箱"
@@ -220,7 +257,10 @@
           />
         </el-form-item>
 
-        <el-form-item label="密码：" prop="password">
+        <el-form-item
+          label="密码："
+          prop="password"
+        >
           <el-input
             v-model="loginForm.password"
             type="password"
@@ -231,18 +271,23 @@
           />
         </el-form-item>
       </el-form>
-      <div slot="footer" class="dialog-footer">
+      <div
+        slot="footer"
+        class="dialog-footer"
+      >
         <el-button @click="cancelLogin">取 消</el-button>
-        <el-button type="primary" :loading="loginLoading" @click="userLogin"
-          >登 录</el-button
-        >
+        <el-button
+          type="primary"
+          :loading="loginLoading"
+          @click="userLogin"
+        >登 录</el-button>
       </div>
     </el-dialog>
     <!-- 注册dialog -->
     <el-dialog
+      v-el-drag-dialog
       width="500px"
       title="注册"
-      v-el-drag-dialog
       :close-on-press-escape="false"
       :close-on-click-modal="false"
       :destroy-on-close="true"
@@ -257,7 +302,10 @@
         auto-complete="off"
         label-position="left"
       >
-        <el-form-item label="邮箱：" prop="email">
+        <el-form-item
+          label="邮箱："
+          prop="email"
+        >
           <el-input
             v-model="registryForm.email"
             placeholder="请输入邮箱"
@@ -267,7 +315,10 @@
           />
         </el-form-item>
 
-        <el-form-item label="密码：" prop="password">
+        <el-form-item
+          label="密码："
+          prop="password"
+        >
           <el-input
             v-model="registryForm.password"
             type="password"
@@ -276,7 +327,10 @@
             auto-complete="on"
           />
         </el-form-item>
-        <el-form-item label="确认密码：" prop="confirmPassword">
+        <el-form-item
+          label="确认密码："
+          prop="confirmPassword"
+        >
           <el-input
             v-model="registryForm.confirmPassword"
             type="password"
@@ -288,7 +342,10 @@
         <div
           style="display:flex;justify-content:space-between;align-items:flex-start"
         >
-          <el-form-item label="验证码：" prop="code">
+          <el-form-item
+            label="验证码："
+            prop="code"
+          >
             <el-input
               v-model="registryForm.code"
               type="text"
@@ -297,11 +354,18 @@
               auto-complete="on"
             />
           </el-form-item>
-          <el-button :disabled="disabled" type="primary" @click="sendCode">{{
+          <el-button
+            :disabled="disabled"
+            type="primary"
+            @click="sendCode"
+          >{{
             sendCodeTxt
           }}</el-button>
         </div>
-        <el-form-item label="昵称：" prop="nickname">
+        <el-form-item
+          label="昵称："
+          prop="nickname"
+        >
           <el-input
             v-model="registryForm.nickname"
             type="text"
@@ -310,28 +374,36 @@
             auto-complete="on"
           />
         </el-form-item>
-        <el-form-item label="性别：" prop="sex">
+        <el-form-item
+          label="性别："
+          prop="sex"
+        >
           <el-radio-group v-model="registryForm.sex">
             <el-radio :label="1">男</el-radio>
             <el-radio :label="0">女</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="城市：" prop="city">
+        <el-form-item
+          label="城市："
+          prop="city"
+        >
           <el-cascader
             v-model="registryForm.city"
             :options="cityOptions"
             @change="changeCity"
-          ></el-cascader>
+          />
         </el-form-item>
       </el-form>
-      <div slot="footer" class="dialog-footer">
+      <div
+        slot="footer"
+        class="dialog-footer"
+      >
         <el-button @click="cancelRegistry">取 消</el-button>
         <el-button
           type="primary"
           :loading="registryLoading"
           @click="userRegistry"
-          >注 册</el-button
-        >
+        >注 册</el-button>
       </div>
     </el-dialog>
   </div>
@@ -627,6 +699,7 @@ export default {
         const { result } = await createComment({
           content: this.content
         });
+        console.log(result);
         this.loading = false;
         this.$message.success("发布评论成功");
         this.getCommentList();
@@ -657,6 +730,7 @@ export default {
           try {
             this.replyLoading = true;
             const { result } = createReply(this.replyForm);
+            console.log(result);
             this.replyLoading = false;
             this.$message.success("回复成功");
             this.cancelReply();
@@ -720,6 +794,7 @@ export default {
         this.time = 61;
         this.timer();
         const { result } = await sendVerify(this.registryForm);
+        console.log(result);
         this.$message.success("验证码发送成功，请您到邮箱查看");
       } catch (e) {
         this.$message.error(e.message);
@@ -772,6 +847,7 @@ export default {
           try {
             this.registryLoading = true;
             const { result } = userRegister(this.registryForm);
+            console.log(result);
             this.registryLoading = false;
             this.$message.success("恭喜您，注册成功");
             this.cancelRegistry();

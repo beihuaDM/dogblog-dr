@@ -1,5 +1,4 @@
 import axios from "axios";
-import store from "@/store";
 import { getToken } from "@/utils/auth";
 
 // 创建一个axios实例
