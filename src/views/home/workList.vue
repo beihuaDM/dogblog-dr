@@ -26,10 +26,10 @@
 </template>
 
 <script>
-import { getArticleList } from '@/api/article';
+import { getArticleList } from "@/api/article";
 
 export default {
-  name: 'WorkList',
+  name: "WorkList",
   components: {},
   data() {
     return {
@@ -49,13 +49,13 @@ export default {
   methods: {
     // 点击跳转文章详情
     goDetail(v) {
-      const { id } = v
+      const { id } = v;
       this.$router.push({
-        path: '/articleDetail',
+        path: "/articleDetail",
         query: {
           id
         }
-      })
+      });
     },
     // 获取作品集
     async getWorkList() {
@@ -67,29 +67,31 @@ export default {
         });
         this.workList = result.rows.splice(0, this.pageCount);
         this.$nextTick(() => {
-          const workListWrap = document.querySelector('.workList-wrap')
+          const workListWrap = document.querySelector(".workList-wrap");
           const childrenCount = workListWrap.childElementCount;
-          childrenCount > 1 ? workListWrap.className += ' gltOne' : workListWrap.className += ' onlyOne'
-        })
+          childrenCount > 1
+            ? (workListWrap.className += " gltOne")
+            : (workListWrap.className += " onlyOne");
+        });
       } catch (e) {
-        this.$message.error(e.message)
+        this.$message.error(e.message);
       }
     },
     // 鼠标滑过作品集
     mouseover(e) {
       const element = e.currentTarget;
-      element.className += ' modalmouseout';
+      element.className += " modalmouseout";
     }
   }
-}
+};
 </script>
-<style lang='scss' scoped>
+<style lang="scss" scoped>
 .workList {
-    width:600px;
-    margin: 0 auto;
-    overflow: hidden;
+  width: 600px;
+  margin: 0 auto;
+  overflow: hidden;
   &-title {
-    margin-bottom:20px;
+    margin-bottom: 20px;
     &-main {
       text-align: center;
       font-size: 18px;
@@ -109,15 +111,15 @@ export default {
     &-block {
       width: 276px;
       height: 150px;
-      background: url('../../assets/images/iamge9_wzxqy.png') no-repeat;
+      background: url("../../assets/images/dog.jpg") -10px no-repeat;
       background-size: cover;
       cursor: pointer;
-      margin-bottom:30px;
+      margin-bottom: 30px;
       overflow: hidden;
       .modal {
         width: 100%;
         height: 100%;
-        background-color: rgba(0,0,0,0.7);
+        background-color: rgba(0, 0, 0, 0.7);
         display: flex;
         opacity: 0;
         justify-content: center;

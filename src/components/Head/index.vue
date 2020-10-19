@@ -10,64 +10,61 @@
         >{{ item.name }}</router-link>
       </div>
       <div class="nav-right">
-        <dog-icon icon-class="icongithub" />
-        <dog-icon icon-class="iconshare" />
+        <a
+          href="https://github.com/beihuaDM"
+        ><dog-icon
+          icon-class="icongithub"
+        /></a>
+        <!-- <dog-icon icon-class="iconshare" /> -->
       </div>
     </div>
   </div>
 </template>
 
 <script>
-
 export default {
-  name: '',
+  name: "",
   components: {},
   data() {
     return {
       navItems: [
         {
           id: 1,
-          name: '首页',
-          path: '/'
+          name: "首页",
+          path: "/"
         },
         {
           id: 2,
-          name: '文章分类',
-          path: '/category'
+          name: "文章分类",
+          path: "/category"
         },
         {
           id: 3,
-          name: '作品集',
-          path: '/workList'
+          name: "作品集",
+          path: "/workList"
         },
         {
           id: 4,
-          name: '关于我',
-          path: '/me'
+          name: "关于我",
+          path: "/me"
         },
         {
           id: 5,
-          name: '给我留言',
-          path: '/comment'
+          name: "给我留言",
+          path: "/comment"
         }
       ]
     };
   },
   watch: {},
-  created() {
-
-  },
-  mounted() {
-
-  },
-  methods: {
-
-  }
-}
+  created() {},
+  mounted() {},
+  methods: {}
+};
 </script>
-<style lang='scss' scoped>
+<style lang="scss" scoped>
 .head {
-  position:absolute;
+  position: absolute;
   z-index: 2;
   top: 0;
   left: 0;
@@ -86,7 +83,7 @@ export default {
     }
     &-right {
       .icon {
-        font-size:16px;
+        font-size: 16px;
         margin-left: 10px;
         cursor: pointer;
       }

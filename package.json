@@ -12,6 +12,7 @@
     "core-js": "^3.6.5",
     "element-ui": "^2.13.2",
     "lodash": "^4.17.20",
+    "mavon-editor": "^2.9.0",
     "moment": "^2.27.0",
     "normalize.css": "^8.0.1",
     "nprogress": "^0.2.0",

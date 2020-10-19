@@ -36,10 +36,12 @@
             v-if="Object.keys(userInfo).length == 0"
             class="noLogin"
           >
-            请您先<span
+            请您先
+            <span
               class="operate-btn-text"
               @click="openLoginDialog"
-            >登录</span>或<span
+            >登录</span>或
+            <span
               class="operate-btn-text"
               @click="openRegistryDialog"
             >注册账号</span>
@@ -48,15 +50,18 @@
             v-else
             class="logined"
           >
-            尊敬的<span class="operate-btn-text">{{ userInfo.nickname }}</span>,欢迎您~
+            尊敬的
+            <span class="operate-btn-text">{{ userInfo.nickname }}</span>,欢迎您~
+            <span
+              class="operate-btn-logout"
+              @click="userLogout"
+            >退出</span>
           </div>
         </div>
         <div
           class="operate-right"
           @click="handleCreateComment"
-        >
-          畅言一下
-        </div>
+        >畅言一下</div>
       </div>
       <div class="comment-title">
         <div class="comment-title-left">
@@ -79,33 +84,27 @@
             </div>
             <div class="right">
               <div class="right-top">
-                <div class="right-top-name">
-                  {{ item.user.nickname }}
-                </div>
+                <div class="right-top-name">{{ item.user.nickname }}</div>
                 <div class="right-top-time">
                   {{ item.createdAt | formatDate }}
                 </div>
               </div>
-              <div class="right-content">
-                {{ item.content }}
-              </div>
+              <div class="right-content">{{ item.content }}</div>
               <div class="right-bottom">
                 <span
                   style="cursor:pointer"
                   class="right-bottom-text"
                   @click="openReplyDialog(item)"
-                >
-                  回复
-                </span>
+                >回复</span>
                 <div @click="handleVoteUp('comment', item)">
                   <dog-icon icon-class="icondianzan" />
                 </div>
                 <span
                   class="right-bottom-num"
                   style="margin-right:20px"
-                >{{
-                  item.vote_up
-                }}</span>
+                >
+                  {{ item.vote_up }}
+                </span>
                 <div @click="handleVoteDown('comment', item)">
                   <dog-icon
                     style="font-size:20px;"
@@ -130,16 +129,12 @@
             </div>
             <div class="right">
               <div class="right-top">
-                <div class="right-top-name">
-                  {{ itm.user.nickname }}
-                </div>
+                <div class="right-top-name">{{ itm.user.nickname }}</div>
                 <div class="right-top-time">
                   {{ item.createdAt | formatDate }}
                 </div>
               </div>
-              <div class="right-content">
-                {{ itm.content }}
-              </div>
+              <div class="right-content">{{ itm.content }}</div>
               <div class="right-bottom">
                 <div @click="handleVoteUp('reply', itm)">
                   <dog-icon icon-class="icondianzan" />
@@ -147,9 +142,9 @@
                 <span
                   class="right-bottom-num"
                   style="margin-right:20px"
-                >{{
-                  itm.vote_up
-                }}</span>
+                >
+                  {{ itm.vote_up }}
+                </span>
                 <div @click="handleVoteDown('reply', itm)">
                   <dog-icon
                     style="font-size:20px;"
@@ -176,7 +171,7 @@
       <img
         class="comment-footImg-img"
         src="../../assets/images/image5_home.png"
-        alt=""
+        alt
       >
     </div>
     <!-- 版权说明 -->
@@ -358,9 +353,9 @@
             :disabled="disabled"
             type="primary"
             @click="sendCode"
-          >{{
-            sendCodeTxt
-          }}</el-button>
+          >
+            {{ sendCodeTxt }}
+          </el-button>
         </div>
         <el-form-item
           label="昵称："
@@ -611,7 +606,6 @@ export default {
         this.total = result.count;
         this.getReplyList();
       } catch (e) {
-        console.log(e);
         this.loading = false;
         this.$message.error(e.message);
       }
@@ -696,10 +690,9 @@ export default {
       }
       try {
         this.loading = true;
-        const { result } = await createComment({
+        await createComment({
           content: this.content
         });
-        console.log(result);
         this.loading = false;
         this.$message.success("发布评论成功");
         this.getCommentList();
@@ -710,7 +703,6 @@ export default {
     },
     // 点击回复按钮
     openReplyDialog(v) {
-      console.log(v);
       this.replyForm.comment_id = v.id;
       this.replyDialogVisible = true;
     },
@@ -729,8 +721,7 @@ export default {
         if (valid) {
           try {
             this.replyLoading = true;
-            const { result } = createReply(this.replyForm);
-            console.log(result);
+            createReply(this.replyForm);
             this.replyLoading = false;
             this.$message.success("回复成功");
             this.cancelReply();
@@ -772,6 +763,10 @@ export default {
         }
       });
     },
+    // 用户点击退出
+    userLogout() {
+      this.$store.dispatch("userLogout");
+    },
     // 用户取消登录
     cancelLogin() {
       this.loginForm = {
@@ -793,8 +788,7 @@ export default {
       try {
         this.time = 61;
         this.timer();
-        const { result } = await sendVerify(this.registryForm);
-        console.log(result);
+        await sendVerify(this.registryForm);
         this.$message.success("验证码发送成功，请您到邮箱查看");
       } catch (e) {
         this.$message.error(e.message);
@@ -846,8 +840,7 @@ export default {
         if (valid) {
           try {
             this.registryLoading = true;
-            const { result } = userRegister(this.registryForm);
-            console.log(result);
+            userRegister(this.registryForm);
             this.registryLoading = false;
             this.$message.success("恭喜您，注册成功");
             this.cancelRegistry();
@@ -931,6 +924,15 @@ export default {
           font-weight: bold;
           cursor: pointer;
         }
+        .operate-btn-logout {
+          display: inline-block;
+          padding: 4px 6px;
+          background-color: #eab92d;
+          border-radius: 2px;
+          font-size: 12px;
+          cursor: pointer;
+          font-weight: bold;
+        }
       }
       .operate-right {
         width: 84px;
@@ -978,6 +980,7 @@ export default {
       .wrap-block {
         border-bottom: 1px dashed #d9d9d9;
         overflow: hidden;
+        margin-top: 20px;
       }
       &-block {
         display: flex;

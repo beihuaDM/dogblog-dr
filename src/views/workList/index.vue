@@ -24,7 +24,7 @@
     </div>
     <!-- 作品集列表 -->
     <div
-      v-if="workList.length >0"
+      v-if="workList.length > 0"
       class="workList-wrap"
     >
       <div
@@ -57,7 +57,7 @@
     </div>
     <!-- 分页组件 -->
     <pagination
-      :hidden="total<10"
+      :hidden="total < 10"
       :total="total"
       :page.sync="page"
       :limit.sync="pageSize"
@@ -78,12 +78,12 @@
 
 <script>
 import Head from "@/components/Head";
-import Foot from '@/components/Footer';
-import Pagination from '@/components/Pagination';
-import { getArticleList } from '@/api/article';
+import Foot from "@/components/Footer";
+import Pagination from "@/components/Pagination";
+import { getArticleList } from "@/api/article";
 
 export default {
-  name: '',
+  name: "",
   components: {
     Head,
     Pagination,
@@ -104,19 +104,17 @@ export default {
   async created() {
     await this.getWorkList(); // 获取作品集
   },
-  mounted() {
-
-  },
+  mounted() {},
   methods: {
     // 点击跳转文章详情
     goDetail(v) {
-      const { id } = v
+      const { id } = v;
       this.$router.push({
-        path: '/articleDetail',
+        path: "/articleDetail",
         query: {
           id
         }
-      })
+      });
     },
     // 获取作品集
     async getWorkList() {
@@ -131,24 +129,26 @@ export default {
         this.workList = result.rows;
         this.total = result.count;
         this.$nextTick(() => {
-          const workListWrap = document.querySelector('.workList-wrap')
+          const workListWrap = document.querySelector(".workList-wrap");
           const childrenCount = workListWrap.childElementCount;
-          childrenCount > 1 ? workListWrap.className += ' gltOne' : workListWrap.className += ' onlyOne'
-        })
+          childrenCount > 1
+            ? (workListWrap.className += " gltOne")
+            : (workListWrap.className += " onlyOne");
+        });
       } catch (e) {
         this.loading = false;
-        this.$message.error(e.message)
+        this.$message.error(e.message);
       }
     },
     // 鼠标滑过作品集
     mouseover(e) {
       const element = e.currentTarget;
-      element.className += ' modalmouseout';
+      element.className += " modalmouseout";
     }
   }
-}
+};
 </script>
-<style lang='scss' scoped>
+<style lang="scss" scoped>
 .workList {
   &-banner {
     position: relative;
@@ -200,21 +200,21 @@ export default {
     }
   }
   &-wrap {
-    width:600px;
+    width: 600px;
     margin: 0 auto;
     overflow: hidden;
     &-block {
       width: 276px;
       height: 150px;
-      background: url('../../assets/images/iamge9_wzxqy.png') no-repeat;
+      background: url("../../assets/images/dog.jpg") -10px no-repeat;
       background-size: cover;
       cursor: pointer;
-      margin-bottom:30px;
+      margin-bottom: 30px;
       overflow: hidden;
       .modal {
         width: 100%;
         height: 100%;
-        background-color: rgba(0,0,0,0.7);
+        background-color: rgba(0, 0, 0, 0.7);
         display: flex;
         opacity: 0;
         justify-content: center;
@@ -274,12 +274,12 @@ export default {
     }
   }
   &-footImg {
-  width: 100%;
-  height: 230px;
-  &-img {
     width: 100%;
     height: 230px;
-  }
+    &-img {
+      width: 100%;
+      height: 230px;
+    }
   }
   .onlyOne {
     display: flex;

@@ -23,14 +23,12 @@
       </div>
     </div>
     <!-- 分类列表 -->
-    <div
-      class="category-list"
-    >
+    <div class="category-list">
       <div
         v-for="item in categoryList"
         :key="item.id"
         class="category-list-block"
-        :class="{'active':item.id === activeId}"
+        :class="{ active: item.id === activeId }"
         @click="handleGetArticleList(item)"
       >
         {{ item.name }}
@@ -63,7 +61,7 @@
     </div>
     <!-- 分页组件 -->
     <pagination
-      :hidden="total<10"
+      :hidden="total < 10"
       :total="total"
       :page.sync="page"
       :limit.sync="pageSize"
@@ -84,11 +82,11 @@
 
 <script>
 import Head from "@/components/Head";
-import Foot from '@/components/Footer'
-import Pagination from '@/components/Pagination';
-import articleCard from '@/components/ArticleCard';
-import { getCategoryList } from '@/api/category';
-import { getArticleList } from '@/api/article';
+import Foot from "@/components/Footer";
+import Pagination from "@/components/Pagination";
+import articleCard from "@/components/ArticleCard";
+import { getCategoryList } from "@/api/category";
+import { getArticleList } from "@/api/article";
 
 export default {
   name: "",
@@ -124,14 +122,13 @@ export default {
       try {
         this.loading = true;
         const { result } = await getCategoryList(params);
-        console.log(result)
         this.loading = false;
         this.categoryList = result.rows;
         this.activeId = result.rows[0].id;
         this.getArticleList();
       } catch (e) {
         this.loading = false;
-        this.$message.error(e.message)
+        this.$message.error(e.message);
       }
     },
     // 获取文章列表
@@ -148,13 +145,13 @@ export default {
         this.total = result.count;
       } catch (e) {
         this.loading = false;
-        this.$message.error(e.message)
+        this.$message.error(e.message);
       }
     },
     // 点击分类，获取分类下文章
     handleGetArticleList(item) {
       if (item.id === this.activeId) {
-        return
+        return;
       }
       this.activeId = item.id;
       this.page = 1;
@@ -163,7 +160,7 @@ export default {
   }
 };
 </script>
-<style lang='scss' scoped>
+<style lang="scss" scoped>
 .category {
   &-banner {
     position: relative;
@@ -217,17 +214,17 @@ export default {
   &-list {
     width: 625px;
     margin: 0 auto;
-    overflow:hidden;
+    overflow: hidden;
     &-block {
       padding: 2px 3px;
       font-size: 14px;
       margin-right: 20px;
       color: #333;
-      cursor:pointer;
+      cursor: pointer;
       text-align: center;
       line-height: 22px;
       float: left;
-      margin-bottom:10px;
+      margin-bottom: 10px;
     }
     &-block:hover {
       background-color: #f2f2f2;
@@ -236,7 +233,7 @@ export default {
       color: #eab92d;
     }
     &-block.active {
-      color:#eab92d;
+      color: #eab92d;
       font-weight: bold;
     }
   }
@@ -276,16 +273,15 @@ export default {
         &-browse {
           font-size: 12px;
           color: #808080;
-          line-height:20px;
+          line-height: 20px;
           float: left;
         }
         &-createTime {
-          margin-left:16px;
+          margin-left: 16px;
           font-size: 12px;
           color: #808080;
-          line-height:20px;
+          line-height: 20px;
           float: left;
-
         }
         &-more {
           line-height: 20px;
